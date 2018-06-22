@@ -5,6 +5,13 @@ Usage
 =====
 python3 change_font.py <twb or twbx file> <output directory>
 
+Note
+====
+The code directly insert the style element after </preferences> tag.
+It doesn't check anything including whether the style has already been inserted.
+This code is to quickly add font to many Tableau workbook to save time.
+Will need a lot more checks to use in general.
+
 Copyright 2018 - Prapat Suriyaphol
 
 Permission is hereby granted, free of charge, to any person obtaining
@@ -33,12 +40,13 @@ from pathlib import Path
 import zipfile
 import shutil
 
-TAHOMA_FONT_STYLE = '''  <style>
+TAHOMA_FONT_STYLE = (
+'''  <style>
     <style-rule element='all'>
       <format attr='font-family' value='Tahoma' />
     </style-rule>
   </style>
-'''
+''')
 
 def add_font(twb_filepath, output_filepath):
     """add font style into twb and save into output_dir"""
@@ -47,7 +55,7 @@ def add_font(twb_filepath, output_filepath):
        open(output_filepath,'w',encoding='utf-8') as outf:
       for line in twb_file:
         outf.write(line)
-        # if last line is </preferences>, insert tahomo style
+        # if last line is </preferences>, insert tahomo style after that
         if line.strip() == '</preferences>':
           outf.write(TAHOMA_FONT_STYLE)
 
